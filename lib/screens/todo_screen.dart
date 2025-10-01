@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/task_provider.dart';
 import '../models/task.dart';
+import '../widgets/task_item.dart';
 
 class TodoScreen extends StatelessWidget {
   const TodoScreen({super.key});
@@ -18,34 +19,22 @@ class TodoScreen extends StatelessWidget {
               itemCount: tasks.length,
               itemBuilder: (ctx, i) {
                 final Task task = tasks[i];
-                return CheckboxListTile(
-                  title: Text(
-                    task.title,
-                    style: TextStyle(
-                      decoration:
-                          task.isDone ? TextDecoration.lineThrough : null,
-                    ),
-                  ),
-                  value: task.isDone,
-                  onChanged: (_) {
-                    taskProvider.toggleTask(task.id);
-                  },
-                  secondary: IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () {
-                      taskProvider.removeTask(task.id);
-                    },
-                  ),
+                return TaskItem(
+                  task: task,
+                  onToggle: () => taskProvider.toggleTask(task.id),
+                  onDelete: () => taskProvider.removeTask(task.id),
                 );
               },
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Thêm dữ liệu test nhanh
-          taskProvider.addTask(Task(
-            id: DateTime.now().toString(),
-            title: "Làm bài tập Flutter",
-          ));
+          taskProvider.addTask(
+            Task(
+              id: DateTime.now().toString(),
+              title: "Làm bài tập Flutter",
+            ),
+          );
         },
         child: const Icon(Icons.add),
       ),

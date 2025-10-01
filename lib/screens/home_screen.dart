@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'expense_screen.dart';
 import 'todo_screen.dart';
+import '../constants/app_colors.dart';
+import '../constants/app_styles.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,14 +34,19 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_titles[_selectedIndex]),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: Text(
+          _titles[_selectedIndex],
+          style: AppStyles.title.copyWith(color: Colors.white),
+        ),
+        backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
       ),
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        selectedItemColor: AppColors.primary,
+        unselectedItemColor: AppColors.textSecondary,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.attach_money),
