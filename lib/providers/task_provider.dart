@@ -1,24 +1,30 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import '../models/task.dart';
+import '../database/db_helper.dart';
 
 class TaskProvider with ChangeNotifier {
-  final List<Task> _tasks = [];
+  List<Task> _tasks = [];
 
   List<Task> get tasks => _tasks;
 
-  void addTask(Task task) {
-    _tasks.add(task);
+  Future<void> loadTasks() async {
+    _tasks = await DBHelper.getTasks();
     notifyListeners();
   }
 
-  void toggleTask(String id) {
-    final task = _tasks.firstWhere((t) => t.id == id);
-    task.isDone = !task.isDone;
-    notifyListeners();
+  Future<void> addTask(Task task) async {
+    await DBHelper.insertTask(task);
+    await loadTasks();
   }
 
-  void removeTask(String id) {
-    _tasks.removeWhere((t) => t.id == id);
-    notifyListeners();
+  Future<void> toggleTask(Task task) async {
+    final updated = Task(id: task.id, title: task.title, isDone: !task.isDone);
+    await DBHelper.updateTask(updated);
+    await loadTasks();
+  }
+
+  Future<void> deleteTask(int id) async {
+    await DBHelper.deleteTask(id);
+    await loadTasks();
   }
 }
