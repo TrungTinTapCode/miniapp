@@ -23,6 +23,11 @@ class TaskProvider with ChangeNotifier {
     await loadTasks();
   }
 
+  Future<void> updateTask(Task task) async {
+    await DBHelper.updateTask(task);
+    await loadTasks();
+  }
+
   Future<void> deleteTask(int id) async {
     await DBHelper.deleteTask(id);
     await loadTasks();

@@ -7,12 +7,14 @@ class TaskItem extends StatelessWidget {
   final Task task;
   final VoidCallback onToggle;
   final VoidCallback onDelete;
+  final VoidCallback? onEdit;
 
   const TaskItem({
     super.key,
     required this.task,
     required this.onToggle,
     required this.onDelete,
+    this.onEdit,
   });
 
   @override
@@ -30,9 +32,18 @@ class TaskItem extends StatelessWidget {
         ),
         value: task.isDone,
         onChanged: (_) => onToggle(),
-        secondary: IconButton(
-          icon: const Icon(Icons.delete, color: AppColors.error),
-          onPressed: onDelete,
+        secondary: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.edit, color: AppColors.primary),
+              onPressed: onEdit,
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete, color: AppColors.error),
+              onPressed: onDelete,
+            ),
+          ],
         ),
       ),
     );

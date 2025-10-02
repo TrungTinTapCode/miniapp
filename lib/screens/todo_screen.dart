@@ -23,29 +23,74 @@ class _TodoScreenState extends State<TodoScreen> {
 
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Thêm công việc"),
-        content: TextField(
-          controller: controller,
-          decoration: const InputDecoration(hintText: "Nhập công việc..."),
-        ),
-        actions: [
-          TextButton(
-            child: const Text("Huỷ"),
-            onPressed: () => Navigator.pop(context),
+      builder:
+          (_) => AlertDialog(
+            title: const Text("Thêm công việc"),
+            content: TextField(
+              controller: controller,
+              decoration: const InputDecoration(hintText: "Nhập công việc..."),
+            ),
+            actions: [
+              TextButton(
+                child: const Text("Huỷ"),
+                onPressed: () => Navigator.pop(context),
+              ),
+              ElevatedButton(
+                child: const Text("Lưu"),
+                onPressed: () {
+                  if (controller.text.isNotEmpty) {
+                    Provider.of<TaskProvider>(
+                      context,
+                      listen: false,
+                    ).addTask(Task(title: controller.text));
+                  }
+                  Navigator.pop(context);
+                },
+              ),
+            ],
           ),
-          ElevatedButton(
-            child: const Text("Lưu"),
-            onPressed: () {
-              if (controller.text.isNotEmpty) {
-                Provider.of<TaskProvider>(context, listen: false)
-                    .addTask(Task(title: controller.text));
-              }
-              Navigator.pop(context);
-            },
+    );
+  }
+
+  void _editTaskDialog(BuildContext context, Task task) {
+    final TextEditingController controller = TextEditingController(
+      text: task.title,
+    );
+
+    showDialog(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: const Text("Sửa công việc"),
+            content: TextField(
+              controller: controller,
+              decoration: const InputDecoration(hintText: "Nhập công việc..."),
+            ),
+            actions: [
+              TextButton(
+                child: const Text("Huỷ"),
+                onPressed: () => Navigator.pop(context),
+              ),
+              ElevatedButton(
+                child: const Text("Lưu"),
+                onPressed: () {
+                  if (controller.text.isNotEmpty) {
+                    Provider.of<TaskProvider>(
+                      context,
+                      listen: false,
+                    ).updateTask(
+                      Task(
+                        id: task.id,
+                        title: controller.text,
+                        isDone: task.isDone,
+                      ),
+                    );
+                  }
+                  Navigator.pop(context);
+                },
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -62,6 +107,7 @@ class _TodoScreenState extends State<TodoScreen> {
             task: task,
             onToggle: () => taskProvider.toggleTask(task),
             onDelete: () => taskProvider.deleteTask(task.id!),
+            onEdit: () => _editTaskDialog(context, task),
           );
         },
       ),
